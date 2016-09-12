@@ -46,7 +46,7 @@ def calculInteret(capitalRestant, tauxAnnuel, echParAn):
 
 
 
-# tableau amortissement
+# tableau amortissement par récurence
 
 def amortissement(capital, tauxAnnuel, nbrEch, echParAn):
     if nbrEch > 0:
@@ -57,13 +57,69 @@ def amortissement(capital, tauxAnnuel, nbrEch, echParAn):
         print("%5.2f" % capital, "%.2f" % mensualite, "%.2f" % interet, "%.2f" % capitalRbst, nbrEch)
         amortissement(newCapital, tauxAnnuel, nbrEch -1, echParAn)
 
+# tableau amortissement
+
+def amortissement2(capital, tauxAnnuel, nbrEch, echParAn):
+    try:
+        assert nbrEch > 0
+        i = nbrEch
+        TotalInterets = 0
+        newCapital = capital
+        mensualite = calculMensualite(newCapital, i, tauxAnnuel)
+        capitalRbst = 0
+
+        while i != 0:
+            interet = calculInteret(newCapital, tauxAnnuel, echParAn)
+            TotalInterets += interet
+            capitalRbst = mensualite - interet
+            print("%5.2f" % newCapital, "%.2f" % mensualite, "%.2f" % interet, "%.2f" % capitalRbst, i)
+            newCapital -= capitalRbst
+            i-=1
+
+        print("")
+        print("TotalInterets: %f" % TotalInterets)
+
+    except AssertionError:
+        print("Une échéance inférieur à 1 ! Vraiement !")
 
 
-# tableau amortissement epargne
-def epargne(a,b):
-    x=0
-    while x < 6:
-        y = a * x + b
-        print x+7
-        print y
-        x=x+1
+
+# tableau amortissement
+
+def amortissement3(capital, tauxAnnuel, nbrEch,  tauxAnnuelAssurance):
+    echParAn = 12
+    try:
+        assert nbrEch > 0
+        i = nbrEch
+        TotalInterets = 0
+        TotalInteretsAssurance = 0
+        newCapital = capital
+        mensualite = calculMensualite(newCapital, i, tauxAnnuel)
+        mensualiteAssurance = calculMensualite(newCapital, i, tauxAnnuelAssurance)
+        capitalRbst = 0
+
+        while i != 0:
+            interet = calculInteret(newCapital, tauxAnnuel, echParAn)
+            interetAssurance = calculInteret(newCapital, tauxAnnuelAssurance, echParAn)
+            TotalInterets += interet
+            TotalInteretsAssurance += interetAssurance
+            capitalRbst = mensualite - interet
+            TotalMensualite = mensualite + interetAssurance
+            print("%5.2f" % newCapital, "%.2f" % mensualite, "%.2f" % interet,
+                  "%.2f" % capitalRbst, "%.2f" % interetAssurance, 
+                  "%.2f" % TotalMensualite, i)
+            newCapital -= capitalRbst
+            i-=1
+
+        print("")
+        print("TotalInterets: %f" % TotalInterets)
+        print("TotalInteretsAssurance: %f" % TotalInteretsAssurance)
+        CoutTotal = TotalInterets + TotalInteretsAssurance
+        print("CoutTotal: %f" % CoutTotal)
+        TotalInteretsPlusCapital = CoutTotal + capital
+        print("TotalInteretsPlusCapital: %f" % TotalInteretsPlusCapital)
+
+    except AssertionError:
+        print("Une échéance inférieur à 1 ! Vraiement !")
+
+
