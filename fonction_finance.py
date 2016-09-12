@@ -33,15 +33,22 @@ def calculMensualite(C, n, t):
 #                      EchAn
 #
 
-def calculTauxPeriodique(txAn, echAn):
+def calculTauxPeriodiqueProportionnel(txAn, echAn):
     return float(txAn)/float(echAn)
 
+def calculTauxPeriodiqueActuarielle(txAn, echAn):
+    return 
 
 
 # Formule calcul des intêrets
 
 def calculInteret(capitalRestant, tauxAnnuel, echParAn):
-    tauxPeriodique = calculTauxPeriodique(tauxAnnuel, echParAn)
+    proportionnel = True
+    if proportionnel == True:
+        tauxPeriodique = calculTauxPeriodiqueProportionnel(tauxAnnuel, echParAn)
+    else:
+        tauxPeriodique = calculTauxPeriodiqueActuarielle(tauxAnnuel, echParAn)
+
     return tauxPeriodique * capitalRestant
 
 
@@ -75,6 +82,8 @@ def amortissement2(capital, tauxAnnuel, nbrEch, echParAn):
             print("%5.2f" % newCapital, "%.2f" % mensualite, "%.2f" % interet, "%.2f" % capitalRbst, i)
             newCapital -= capitalRbst
             i-=1
+            if i < 41-10 :
+                break
 
         print("")
         print("TotalInterets: %f" % TotalInterets)
@@ -95,6 +104,7 @@ def amortissement3(capital, tauxAnnuel, nbrEch,  tauxAnnuelAssurance):
         TotalInteretsAssurance = 0
         newCapital = capital
         mensualite = calculMensualite(newCapital, i, tauxAnnuel)
+        print("mensualite : %f" % mensualite)
         mensualiteAssurance = calculMensualite(newCapital, i, tauxAnnuelAssurance)
         capitalRbst = 0
 
@@ -104,7 +114,7 @@ def amortissement3(capital, tauxAnnuel, nbrEch,  tauxAnnuelAssurance):
             TotalInterets += interet
             TotalInteretsAssurance += interetAssurance
             capitalRbst = mensualite - interet
-            TotalMensualite = mensualite + interetAssurance
+            TotalMensualite = mensualite #+ interetAssurance
             print("%5.2f" % newCapital, "%.2f" % mensualite, "%.2f" % interet,
                   "%.2f" % capitalRbst, "%.2f" % interetAssurance, 
                   "%.2f" % TotalMensualite, i)
@@ -116,6 +126,9 @@ def amortissement3(capital, tauxAnnuel, nbrEch,  tauxAnnuelAssurance):
         print("TotalInteretsAssurance: %f" % TotalInteretsAssurance)
         CoutTotal = TotalInterets + TotalInteretsAssurance
         print("CoutTotal: %f" % CoutTotal)
+
+        print("")
+        print("mensualite theorique: %f" % TotalMensualite)
         TotalInteretsPlusCapital = CoutTotal + capital
         print("TotalInteretsPlusCapital: %f" % TotalInteretsPlusCapital)
 
@@ -123,3 +136,47 @@ def amortissement3(capital, tauxAnnuel, nbrEch,  tauxAnnuelAssurance):
         print("Une échéance inférieur à 1 ! Vraiement !")
 
 
+# tableau amortissement
+
+def amortissement4(capital, tauxAnnuelCapital, nbrEch,  tauxAnnuelAssurance):
+    echParAn = 12
+    try:
+        assert nbrEch > 0
+        i = nbrEch
+        TotalInteretsCapital = 0
+        TotalInteretsAssurance = 0
+        TotalInterets = TotalInteretsCapital + TotalInteretsAssurance
+        newCapital = capital
+        mensualite = calculMensualite(newCapital, i, tauxAnnuelCapital)
+        capitalRbst = 0
+
+        interetAssurance = round(capital * tauxAnnuelAssurance / echParAn, 2)
+
+        while i != 0:
+            interet = round(calculInteret(newCapital, tauxAnnuelCapital, echParAn), 2)
+            TotalInteretsCapital += interet
+            TotalInteretsAssurance += interetAssurance
+            capitalRbst = mensualite - interet
+            MensualiteTotal = mensualite + interetAssurance
+            print("%5.2f" % newCapital,
+                  "%.2f" % interetAssurance,
+                  "%.2f" % interet,
+                  "%.2f" % capitalRbst,
+                  "%.2f" % mensualite,
+                  "%.2f" % MensualiteTotal,
+                  i)
+            newCapital -= capitalRbst
+            i-=1
+            #if i < 41-5 :
+            #    break
+
+        print("")
+        print("TotalInteretsCapital: %.2f" % TotalInteretsCapital)
+        print("TotalInteretsAssurance: %.2f" % TotalInteretsAssurance)
+        CoutTotal = TotalInteretsCapital + TotalInteretsAssurance
+        print("CoutTotal: %f" % CoutTotal)
+        TotalInteretsCapitalPlusCapital = CoutTotal + capital
+        print("TotalInteretsCapitalPlusCapital: %.2f" % TotalInteretsCapitalPlusCapital)
+
+    except AssertionError:
+        print("Une échéance inférieur à 1 ! Vraiement !")
